@@ -1,3 +1,9 @@
+# Transcribes audio in real-time using WebRTC VAD and FasterWhisper
+# This script uses PyAudio for real-time audio capture and FasterWhisper for transcription.
+# It also uses pyautogui to simulate keyboard input for transcription output.
+# The script is designed to run in a loop, continuously capturing audio and transcribing it until interrupted.
+# It uses a lock file to prevent multiple instances from running simultaneously.
+# The script requires the following libraries:
 import os
 import pyaudio
 import pyautogui
