@@ -11,10 +11,13 @@ import struct
 
 # Audio settings
 SAMPLE_RATE = 16000  # WebRTC VAD requires 8kHz, 16kHz, 32kHz, or 48kHz
-CHUNK_DURATION_MS = 30  # VAD works with 10ms, 20ms, or 30ms chunks
+CHUNK_DURATION_MS = 20  # VAD works with 10ms, 20ms, or 30ms chunks
 CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
 MIN_SPEECH_DURATION = 0.5  # Minimum speech duration to process (in seconds)
 BUFFER_MAX_SIZE = 100  # Maximum number of chunks to keep in buffer
+
+# Initialize FasterWhisper model
+model = WhisperModel("small.en", device="cpu", compute_type="int8")
 
 class AudioBuffer:
     def __init__(self):
@@ -111,9 +114,6 @@ def save_recorded_audio(filename, frames, sample_rate):
     wf.close()
 
 def main():
-    # Initialize FasterWhisper model
-    model = WhisperModel("small", device="cpu", compute_type="int8")
-
     # Initialize WebRTC VAD
     vad = webrtcvad.Vad(3)
 
@@ -135,7 +135,7 @@ def main():
             audio_file = "temp_chunk.wav"
             if process_audio_buffer(audio_buffer, vad, audio_file, max_duration=5):
                 # Transcribe the chunk if speech was detected
-                segments, info = model.transcribe(audio_file, beam_size=5)
+                segments, info = model.transcribe(audio_file, beam_size=1)
                 for segment in segments:
                     print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {segment.text}")
                     if (segment.text == "enter."):
