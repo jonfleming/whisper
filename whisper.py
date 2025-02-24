@@ -78,13 +78,15 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=1, sample_rate=S
     audio_np = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
 
     # Transcribe directly from NumPy array
-    segments, _ = model.transcribe(audio_np, beam_size=1)
+    segments, _ = model.transcribe(audio_np, beam_size=1, vad_filter=True)
     for segment in segments:
-        print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {segment.text}")
-        if segment.text.lower() == "enter.":
+        final_text = segment.text
+        print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}")
+
+        if len(final_text) <  8 and "enter" in final_text.strip().lower():
             pyautogui.press("enter")
         else:
-            pyautogui.write(segment.text)
+            pyautogui.write(final_text)
 
     return True
 
@@ -125,7 +127,7 @@ def save_recorded_audio(filename, frames, sample_rate):
 
 def main():
     # Initialize FasterWhisper model
-    model = WhisperModel("small.en", device="cuda", compute_type="float16")
+    model = WhisperModel("medium.en", device="cuda", compute_type="float16")
 
     # Initialize WebRTC VAD
     vad = webrtcvad.Vad(3)
