@@ -83,11 +83,10 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=1, sample_rate=S
     segments, _ = model.transcribe(audio_np, beam_size=1, vad_filter=True)
     for segment in segments:
         final_text = segment.text
-        # print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}")
+        print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}")
 
         if len(final_text) < 8 and "enter" in final_text.strip().lower():
             pyautogui.press("enter")
-            pyautogui.write("< >")
         else:
             pyautogui.write(final_text)
 
