@@ -1,3 +1,6 @@
+# Claude AI Whisper Transcription Example
+# This script records audio from the microphone, saves it as a WAV file,
+# and then uses the Whisper model to transcribe the audio.
 import pyaudio
 import wave
 from faster_whisper import WhisperModel
