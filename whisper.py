@@ -1,3 +1,4 @@
+import os
 import pyaudio
 import pyautogui
 import wave
@@ -6,6 +7,7 @@ import webrtcvad
 from faster_whisper import WhisperModel
 import numpy as np
 from queue import Queue
+import sys
 from threading import Thread, Event
 import struct
 
@@ -15,7 +17,7 @@ CHUNK_DURATION_MS = 20  # VAD works with 10ms, 20ms, or 30ms chunks
 CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
 MIN_SPEECH_DURATION = 0.5  # Minimum speech duration to process (in seconds)
 BUFFER_MAX_SIZE = 100  # Maximum number of chunks to keep in buffer
-
+LOCK_FILE = "whisper.lock"
 class AudioBuffer:
     def __init__(self):
         self.buffer = Queue(maxsize=BUFFER_MAX_SIZE)
@@ -81,10 +83,11 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=1, sample_rate=S
     segments, _ = model.transcribe(audio_np, beam_size=1, vad_filter=True)
     for segment in segments:
         final_text = segment.text
-        print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}")
+        # print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}")
 
-        if len(final_text) <  8 and "enter" in final_text.strip().lower():
+        if len(final_text) < 8 and "enter" in final_text.strip().lower():
             pyautogui.press("enter")
+            pyautogui.write("< >")
         else:
             pyautogui.write(final_text)
 
@@ -126,6 +129,13 @@ def save_recorded_audio(filename, frames, sample_rate):
     wf.close()
 
 def main():
+    if os.path.exists(LOCK_FILE):
+        print("Another instance is already running.")
+        sys.exit(1)  # Exit if another instance is found
+
+    # Create the lock file
+    open(LOCK_FILE, "w").close()
+
     # Initialize FasterWhisper model
     model = WhisperModel("medium.en", device="cuda", compute_type="float16")
 
@@ -155,6 +165,7 @@ def main():
         audio_buffer.stop_recording.set()
 
     # Clean up
+    os.remove(LOCK_FILE) 
     stream.stop_stream()
     stream.close()
     p.terminate()
