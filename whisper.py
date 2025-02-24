@@ -48,7 +48,7 @@ def is_speech(frame, vad, sample_rate=SAMPLE_RATE):
     except Exception:
         return False
 
-def process_audio_buffer(audio_buffer, vad, model, max_duration=5, sample_rate=SAMPLE_RATE):
+def process_audio_buffer(audio_buffer, vad, model, max_duration=1, sample_rate=SAMPLE_RATE):
     """Process audio from buffer and transcribe in real-time without saving to file."""
     frames, speech_detected, speech_start_time, total_duration, silence_duration = initialize_processing_vars()
 
@@ -125,7 +125,7 @@ def save_recorded_audio(filename, frames, sample_rate):
 
 def main():
     # Initialize FasterWhisper model
-    model = WhisperModel("small.en", device="cpu", compute_type="int8")
+    model = WhisperModel("small.en", device="cuda", compute_type="float16")
 
     # Initialize WebRTC VAD
     vad = webrtcvad.Vad(3)
@@ -145,7 +145,7 @@ def main():
 
     try:
         while True:
-            process_audio_buffer(audio_buffer, vad, model, max_duration=5)
+            process_audio_buffer(audio_buffer, vad, model, max_duration=1)
 
 
     except KeyboardInterrupt:
