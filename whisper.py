@@ -16,6 +16,7 @@ from queue import Queue
 import sys
 from threading import Thread, Event
 import struct
+import keyboard
 
 # Audio settings
 SAMPLE_RATE = 16000  # WebRTC VAD requires 8kHz, 16kHz, 32kHz, or 48kHz
@@ -24,6 +25,8 @@ CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
 MIN_SPEECH_DURATION = 0.5  # Minimum speech duration to process (in seconds)
 BUFFER_MAX_SIZE = 100  # Maximum number of chunks to keep in buffer
 LOCK_FILE = "whisper.lock"
+DEBUG = False
+
 class AudioBuffer:
     def __init__(self):
         self.buffer = Queue(maxsize=BUFFER_MAX_SIZE)
@@ -56,7 +59,7 @@ def is_speech(frame, vad, sample_rate=SAMPLE_RATE):
     except Exception:
         return False
 
-def process_audio_buffer(audio_buffer, vad, model, max_duration=1, sample_rate=SAMPLE_RATE):
+def process_audio_buffer(audio_buffer, vad, model, max_duration=1):
     """Process audio from buffer and transcribe in real-time without saving to file."""
     frames, speech_detected, speech_start_time, total_duration, silence_duration = initialize_processing_vars()
 
@@ -74,8 +77,8 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=1, sample_rate=S
         else:
             silence_duration = handle_silence_detected(
                 speech_detected, silence_duration, chunk, frames, speech_start_time)
-            if silence_duration is None:
-                break
+            # if silence_duration is None:
+            #     break
 
     if not frames:
         print(".", end="")
@@ -86,7 +89,7 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=1, sample_rate=S
     audio_np = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
 
     # Transcribe directly from NumPy array
-    segments, _ = model.transcribe(audio_np, beam_size=1, vad_filter=True)
+    segments, _ = model.transcribe(audio_np, beam_size=3, vad_filter=False)
     for segment in segments:
         final_text = segment.text
         print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}")
@@ -116,7 +119,7 @@ def handle_speech_detected(speech_detected, speech_start_time, silence_duration,
     return speech_detected, speech_start_time, silence_duration
 
 def handle_silence_detected(speech_detected, silence_duration, chunk, frames, speech_start_time):
-    MAX_SILENCE_DURATION = 0.5  # Maximum silence duration before stopping
+    MAX_SILENCE_DURATION = 1.5  # Increased maximum silence duration before stopping
     if speech_detected:
         silence_duration += CHUNK_DURATION_MS / 1000
         frames.append(chunk)
@@ -133,6 +136,11 @@ def save_recorded_audio(filename, frames, sample_rate):
     wf.writeframes(b''.join(frames))
     wf.close()
 
+def wait(msg):
+    if DEBUG:
+        print(msg)
+        # keyboard.read_event(msg)
+
 def main():
     if os.path.exists(LOCK_FILE):
         print("Another instance is already running.")
@@ -142,7 +150,7 @@ def main():
     open(LOCK_FILE, "w").close()
 
     # Initialize FasterWhisper model
-    model = WhisperModel("medium.en", device="cuda", compute_type="float16")
+    model = WhisperModel("large-v3", device="cuda", compute_type="float16")
 
     # Initialize WebRTC VAD
     vad = webrtcvad.Vad(3)
@@ -163,17 +171,22 @@ def main():
     try:
         while True:
             process_audio_buffer(audio_buffer, vad, model, max_duration=1)
-
-
     except KeyboardInterrupt:
-        os.remove(LOCK_FILE) 
         print("\nStopped by user.")
+    finally:
+        # Ensure resources are cleaned up properly
+        wait("stop_recording")
         audio_buffer.stop_recording.set()
-
-    # Clean up
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
+        wait("stop_stream")
+        stream.stop_stream()
+        wait("stream.close")
+        stream.close()
+        wait("p.terminate")
+        p.terminate()
+        if os.path.exists(LOCK_FILE):
+            wait("os.remove")
+            os.remove(LOCK_FILE)
+        exit(0)
 
 if __name__ == "__main__":
     main()
