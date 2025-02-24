@@ -160,11 +160,11 @@ def main():
 
 
     except KeyboardInterrupt:
+        os.remove(LOCK_FILE) 
         print("\nStopped by user.")
         audio_buffer.stop_recording.set()
 
     # Clean up
-    os.remove(LOCK_FILE) 
     stream.stop_stream()
     stream.close()
     p.terminate()
