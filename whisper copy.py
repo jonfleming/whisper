@@ -16,6 +16,9 @@ CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
 MIN_SPEECH_DURATION = 0.5  # Minimum speech duration to process (in seconds)
 BUFFER_MAX_SIZE = 100  # Maximum number of chunks to keep in buffer
 
+# Initialize FasterWhisper model
+model = WhisperModel("small.en", device="cpu", compute_type="int8")
+
 class AudioBuffer:
     def __init__(self):
         self.buffer = Queue(maxsize=BUFFER_MAX_SIZE)
@@ -48,8 +51,8 @@ def is_speech(frame, vad, sample_rate=SAMPLE_RATE):
     except Exception:
         return False
 
-def process_audio_buffer(audio_buffer, vad, model, max_duration=5, sample_rate=SAMPLE_RATE):
-    """Process audio from buffer and transcribe in real-time without saving to file."""
+def process_audio_buffer(audio_buffer, vad, max_duration=5):
+    """Process audio from buffer when speech is detected."""
     frames, speech_detected, speech_start_time, total_duration, silence_duration = initialize_processing_vars()
 
     while total_duration < max_duration:
@@ -63,6 +66,18 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=5, sample_rate=S
         if is_speech(chunk, vad):
             speech_detected, speech_start_time, silence_duration = handle_speech_detected(
                 speech_detected, speech_start_time, silence_duration, chunk, frames)
+            
+            # Transcribe the chunk if speech was detected
+            audio_data = np.frombuffer(b''.join(frames), dtype=np.int16).astype(np.float32) / 32768.0
+            segments, _ = model.transcribe(audio_data, beam_size=5)            
+            for segment in segments:
+                print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {segment.text}")
+                if (segment.text == "enter."):
+                    pyautogui.press("enter")
+                else:
+                    pyautogui.write(segment.text)
+
+
         else:
             silence_duration = handle_silence_detected(
                 speech_detected, silence_duration, chunk, frames, speech_start_time)
@@ -72,19 +87,6 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=5, sample_rate=S
     if not frames:
         print(".", end="")
         return False
-
-    # Convert raw audio frames to NumPy array
-    audio_data = b"".join(frames)
-    audio_np = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
-
-    # Transcribe directly from NumPy array
-    segments, _ = model.transcribe(audio_np, beam_size=1)
-    for segment in segments:
-        print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {segment.text}")
-        if segment.text.lower() == "enter.":
-            pyautogui.press("enter")
-        else:
-            pyautogui.write(segment.text)
 
     return True
 
@@ -100,8 +102,7 @@ def handle_speech_detected(speech_detected, speech_start_time, silence_duration,
     if not speech_detected:
         speech_detected = True
         speech_start_time = time.time()
-    if silence_duration > 0:
-        silence_duration = 0
+    silence_duration = 0
     frames.append(chunk)
     return speech_detected, speech_start_time, silence_duration
 
@@ -124,9 +125,6 @@ def save_recorded_audio(filename, frames, sample_rate):
     wf.close()
 
 def main():
-    # Initialize FasterWhisper model
-    model = WhisperModel("small.en", device="cpu", compute_type="int8")
-
     # Initialize WebRTC VAD
     vad = webrtcvad.Vad(3)
 
@@ -145,8 +143,7 @@ def main():
 
     try:
         while True:
-            process_audio_buffer(audio_buffer, vad, model, max_duration=5)
-
+            process_audio_buffer(audio_buffer, vad, max_duration=5)
 
     except KeyboardInterrupt:
         print("\nStopped by user.")
