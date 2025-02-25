@@ -22,11 +22,16 @@ import keyboard
 SAMPLE_RATE = 16000  # WebRTC VAD requires 8kHz, 16kHz, 32kHz, or 48kHz
 CHUNK_DURATION_MS = 20  # VAD works with 10ms, 20ms, or 30ms chunks
 CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
-MIN_SPEECH_DURATION = 0.5  # Minimum speech duration to process (in seconds)
+MIN_SPEECH_DURATION = 1.5  # Minimum speech duration to process (in seconds)
 BUFFER_MAX_SIZE = 100  # Maximum number of chunks to keep in buffer
 LOCK_FILE = "whisper.lock"
-DEBUG = False
+AWAKE_TIME = 250
+DEBUG = True
 
+awake = False
+sleep_countdown = 0
+spin = ['—', ' ']
+spin_index = 0
 class AudioBuffer:
     def __init__(self):
         self.buffer = Queue(maxsize=BUFFER_MAX_SIZE)
@@ -59,11 +64,14 @@ def is_speech(frame, vad, sample_rate=SAMPLE_RATE):
     except Exception:
         return False
 
-def process_audio_buffer(audio_buffer, vad, model, max_duration=1):
+def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
+    global awake, sleep_countdown, spin, spin_index
     """Process audio from buffer and transcribe in real-time without saving to file."""
     frames, speech_detected, speech_start_time, total_duration, silence_duration = initialize_processing_vars()
 
+    # print()
     while total_duration < max_duration:
+
         chunk = audio_buffer.get_chunk()
         if chunk is None:
             time.sleep(0.01)  # Small sleep to prevent busy waiting
@@ -74,32 +82,50 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=1):
         if is_speech(chunk, vad):
             speech_detected, speech_start_time, silence_duration = handle_speech_detected(
                 speech_detected, speech_start_time, silence_duration, chunk, frames)
+            if awake:
+                sleep_countdown = AWAKE_TIME # Reset awake time when speech is detected
         else:
             silence_duration = handle_silence_detected(
                 speech_detected, silence_duration, chunk, frames, speech_start_time)
-            # if silence_duration is None:
-            #     break
+            if awake:
+                pyautogui.write(spin[spin_index])
+                pyautogui.press("backspace")
+                spin_index = (spin_index + 1) % len(spin)
+                sleep_countdown -= 1
+                if sleep_countdown <= 0:
+                    print("\nSleeping...")
+                    awake = False
+
+        print(f"\rSilence_duration: {silence_duration:.2f} {'Awake' if awake  else 'Asleep'} {sleep_countdown}", end="", flush=True)
 
     if not frames:
         print(".", end="")
         return False
 
-    # Convert raw audio frames to NumPy array
+    transcribe_audio(frames, model)
+    return True
+
+def transcribe_audio(frames, model):
+    """Convert audio frames to text using the Whisper model."""
+    global awake, sleep_countdown
     audio_data = b"".join(frames)
     audio_np = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
 
-    # Transcribe directly from NumPy array
     segments, _ = model.transcribe(audio_np, beam_size=3, vad_filter=False)
     for segment in segments:
         final_text = segment.text
         print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}")
 
-        if len(final_text) < 8 and "enter" in final_text.strip().lower():
-            pyautogui.press("enter")
+        if not awake:
+            if "teresa" in final_text.strip().lower():
+                awake = True
+                sleep_countdown = AWAKE_TIME
+                print("\nWaking Up!")
         else:
-            pyautogui.write(final_text)
-
-    return True
+            if len(final_text) < 8 and "enter" in final_text.strip().lower():
+                pyautogui.press("enter")
+            else:
+                pyautogui.write(final_text)
 
 def initialize_processing_vars():
     frames = []
@@ -125,7 +151,7 @@ def handle_silence_detected(speech_detected, silence_duration, chunk, frames, sp
         frames.append(chunk)
         if silence_duration >= MAX_SILENCE_DURATION:
             if (time.time() - speech_start_time) >= MIN_SPEECH_DURATION:
-                return None
+                return 0
     return silence_duration
 
 def save_recorded_audio(filename, frames, sample_rate):
@@ -170,9 +196,11 @@ def main():
 
     try:
         while True:
-            process_audio_buffer(audio_buffer, vad, model, max_duration=1)
+            process_audio_buffer(audio_buffer, vad, model, max_duration=3)
     except KeyboardInterrupt:
         print("\nStopped by user.")
+    except Exception as e:
+        print(f"Error: {e}")
     finally:
         # Ensure resources are cleaned up properly
         wait("stop_recording")
