@@ -32,6 +32,7 @@ DEBUG = True
 awake = False
 sleep_countdown = 0
 prompt = ">"
+output = ""
 class AudioBuffer:
     def __init__(self):
         self.buffer = Queue(maxsize=BUFFER_MAX_SIZE)
@@ -69,7 +70,6 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
     """Process audio from buffer and transcribe in real-time without saving to file."""
     frames, speech_detected, speech_start_time, total_duration, silence_duration = initialize_processing_vars()
 
-    # print()
     while total_duration < max_duration:
 
         chunk = audio_buffer.get_chunk()
@@ -104,13 +104,13 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
 
 def transcribe_audio(frames, model):
     """Convert audio frames to text using the Whisper model."""
-    global awake, sleep_countdown, prompt
+    global awake, sleep_countdown, prompt, output
     audio_data = b"".join(frames)
     audio_np = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
 
     segments, _ = model.transcribe(audio_np, beam_size=3, vad_filter=False)
     for segment in segments:
-        final_text = segment.text
+        final_text = segment.text.lower().replace(".", "")
         print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}")
 
         if not awake:
@@ -123,8 +123,20 @@ def transcribe_audio(frames, model):
 
             if len(final_text) < 8 and "enter" in final_text.strip().lower():
                 pyautogui.press("enter")
+            elif len(final_text) < 8 and "period" in final_text.strip().lower():
+                pyautogui.write(". ")
+            elif len(final_text) < 8 and "delete" in final_text.strip().lower():
+                debug(":" + output + ":")
+                last_word = get_last_word(output)
+                output = output[:-len(last_word)].rstrip()
+                debug("[" + last_word + "]")
+                for _ in range(len(last_word) + 1):  # +1 to remove the trailing space
+                    pyautogui.press("backspace")
+                debug(">" + output + "<")
+
             else:
                 pyautogui.write(final_text)
+                output = output + final_text
                 show_prompt()
 
 def show_prompt():
@@ -137,6 +149,10 @@ def clear_prompt():
     if prompt == ">":
         prompt = ""
         pyautogui.press("backspace")
+
+def get_last_word(text):
+    words = text.split()
+    return words[-1] if words else text
 
 def initialize_processing_vars():
     frames = []
@@ -173,7 +189,7 @@ def save_recorded_audio(filename, frames, sample_rate):
     wf.writeframes(b''.join(frames))
     wf.close()
 
-def wait(msg):
+def debug(msg):
     if DEBUG:
         print(msg)
         # keyboard.read_event(msg)
@@ -218,18 +234,17 @@ def main():
         print(f"Error: {e}")
     finally:
         # Ensure resources are cleaned up properly
-        wait("stop_recording")
+        debug("stop_recording")
         audio_buffer.stop_recording.set()
-        wait("stop_stream")
+        debug("stop_stream")
         stream.stop_stream()
-        wait("stream.close")
+        debug("stream.close")
         stream.close()
-        wait("p.terminate")
+        debug("p.terminate")
         p.terminate()
         if os.path.exists(LOCK_FILE):
-            wait("os.remove")
+            debug("os.remove")
             os.remove(LOCK_FILE)
-        sys.exit(0)
 
 if __name__ == "__main__":
     main()
