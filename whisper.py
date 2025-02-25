@@ -17,6 +17,7 @@ import sys
 from threading import Thread, Event
 import struct
 import keyboard
+import argparse
 
 # Audio settings
 SAMPLE_RATE = 16000  # WebRTC VAD requires 8kHz, 16kHz, 32kHz, or 48kHz
@@ -30,8 +31,7 @@ DEBUG = True
 
 awake = False
 sleep_countdown = 0
-spin = ['—', ' ']
-spin_index = 0
+prompt = ">"
 class AudioBuffer:
     def __init__(self):
         self.buffer = Queue(maxsize=BUFFER_MAX_SIZE)
@@ -65,7 +65,7 @@ def is_speech(frame, vad, sample_rate=SAMPLE_RATE):
         return False
 
 def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
-    global awake, sleep_countdown, spin, spin_index
+    global awake, sleep_countdown
     """Process audio from buffer and transcribe in real-time without saving to file."""
     frames, speech_detected, speech_start_time, total_duration, silence_duration = initialize_processing_vars()
 
@@ -88,12 +88,9 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
             silence_duration = handle_silence_detected(
                 speech_detected, silence_duration, chunk, frames, speech_start_time)
             if awake:
-                pyautogui.write(spin[spin_index])
-                pyautogui.press("backspace")
-                spin_index = (spin_index + 1) % len(spin)
                 sleep_countdown -= 1
                 if sleep_countdown <= 0:
-                    print("\nSleeping...")
+                    clear_prompt()
                     awake = False
 
         print(f"\rSilence_duration: {silence_duration:.2f} {'Awake' if awake  else 'Asleep'} {sleep_countdown}", end="", flush=True)
@@ -107,7 +104,7 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
 
 def transcribe_audio(frames, model):
     """Convert audio frames to text using the Whisper model."""
-    global awake, sleep_countdown
+    global awake, sleep_countdown, prompt
     audio_data = b"".join(frames)
     audio_np = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
 
@@ -120,12 +117,26 @@ def transcribe_audio(frames, model):
             if "teresa" in final_text.strip().lower():
                 awake = True
                 sleep_countdown = AWAKE_TIME
-                print("\nWaking Up!")
+                show_prompt()
         else:
+            clear_prompt()
+
             if len(final_text) < 8 and "enter" in final_text.strip().lower():
                 pyautogui.press("enter")
             else:
                 pyautogui.write(final_text)
+                show_prompt()
+
+def show_prompt():
+    global prompt
+    prompt= ">"
+    pyautogui.write(prompt)
+
+def clear_prompt():
+    global prompt
+    if prompt == ">":
+        prompt = ""
+        pyautogui.press("backspace")
 
 def initialize_processing_vars():
     frames = []
@@ -168,7 +179,11 @@ def wait(msg):
         # keyboard.read_event(msg)
 
 def main():
-    if os.path.exists(LOCK_FILE):
+    parser = argparse.ArgumentParser(description="Real-time audio transcription with VAD and FasterWhisper.")
+    parser.add_argument("-f", "--force", action="store_true", help="Force bypass the lock file test.")
+    args = parser.parse_args()
+
+    if os.path.exists(LOCK_FILE) and not args.force:
         print("Another instance is already running.")
         sys.exit(1)  # Exit if another instance is found
 
@@ -214,7 +229,7 @@ def main():
         if os.path.exists(LOCK_FILE):
             wait("os.remove")
             os.remove(LOCK_FILE)
-        exit(0)
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()
