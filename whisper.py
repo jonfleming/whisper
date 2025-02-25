@@ -123,8 +123,12 @@ def transcribe_audio(frames, model):
 
             if len(final_text) < 8 and "enter" in final_text.strip().lower():
                 pyautogui.press("enter")
+                output = output + "\n"
+                show_prompt()
             elif len(final_text) < 8 and "period" in final_text.strip().lower():
                 pyautogui.write(". ")
+                output = output + ". "
+                show_prompt()
             elif len(final_text) < 8 and "delete" in final_text.strip().lower():
                 debug(":" + output + ":")
                 last_word = get_last_word(output)
@@ -133,6 +137,7 @@ def transcribe_audio(frames, model):
                 for _ in range(len(last_word) + 1):  # +1 to remove the trailing space
                     pyautogui.press("backspace")
                 debug(">" + output + "<")
+                show_prompt()
 
             else:
                 pyautogui.write(final_text)
