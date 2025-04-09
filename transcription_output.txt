@@ -1,0 +1,79 @@
+[2.06s - 4.06s]  teresa
+[0.00s - 1.52s]  nothing less to a space
+[0.00s - 3.00s]  so it's not like scratching your head trying to figure out where it is, it's actually a 10mm screw
+[0.14s - 3.42s]  it just isn't there now in this video you'll actually
+[0.21s - 2.49s]  three of these spaces to a little hut board
+[2.69s - 3.55s]  but again, because the design has changed,
+[0.00s - 3.80s]  what we want to do is to actually attach a form
+[0.00s - 3.20s]  reason it's not quite actually following through with what they do here which is to attach that
+[0.00s - 3.70s]  spacer to the actual raspberry pi itself this turns out to be just a temporary
+[0.00s - 3.68s]  it's the way the original design was suctioned up, but because that design has not changed
+[0.00s - 3.54s]  well, there's no plugs instead, as i say, we just attach all four of those actual spaces
+[0.00s - 2.88s]  another board is n630-a3 board, two different pipe patterns
+[0.21s - 3.19s]  and the players don't even need a touch-up game in this
+stop_recording
+stop_stream
+stream.close
+p.terminate
+os.remove
+[0.34s - 2.34s]  teresa
+[0.00s - 2.92s]  19%, 19% donald trump
+[0.00s - 3.42s]  just put out a post about an hour
+[1.10s - 3.40s]  that talks about a brand new
+[0.00s - 3.42s]  approach to tariffs that has changed dramatically here
+[1.26s - 3.42s]  we've talked a lot about the different possibilities
+[0.00s - 3.38s]  on this channel but we have confirmation that
+[0.11s - 3.39s]  is hiking tariffs on china to 125%
+[0.00s - 2.64s]  and authorizes a 90-day tariff pause on everyone else
+[0.00s - 3.54s]  this post real quick, based on the lack of respect that china
+[0.00s - 2.16s]  has shown to the world's market
+[2.46s - 3.46s]  i wish i could do a trump
+[0.00s - 3.76s]  pressure, but i can't i am hereby raising that tariffs
+[0.00s - 3.56s]  charged to china by the united states of america to 125% effective
+[0.00s - 5.54s]  immediately at some point hopefully in the near future china
+[0.00s - 3.54s]  will realize that the days of ripping off the usa and other countries is not
+[0.00s - 3.66s]  longer sustainable or acceptable conversely, and based on
+[0.00s - 3.30s]  the fact that more than 25, i've said, sorry, 75
+[0.00s - 5.48s]  have called representatives of the united states including
+[0.00s - 3.54s]  the department of commerce, treasury, and the ust
+[0.00s - 3.52s]  are to negotiate a solution to the subjects being discussed relative
+[0.00s - 3.52s]  to trade barriers, tariffs, currency money pollution
+[0.18s - 2.12s]  and non-monetary tariffs
+[0.00s - 3.44s]  these countries have not, and my strong suggestion would help
+[0.37s - 3.33s]  in any way, shape, or form, i guess, in the united states
+[0.00s - 3.18s]  have authorized a 90-day pause and a substantial
+[0.00s - 3.68s]  substantially lower reciprocal tariff during this period of time
+[0.00s - 3.58s]  10% also effective immediately
+[0.00s - 2.18s]  thank you for your attention to this matter
+[0.00s - 5.44s]  course that we showed before the entire stock market
+[0.00s - 3.52s]  it not just test life i mean this thing keeps going up all this
+[0.00s - 1.76s]  it's at 19% now
+[2.54s - 3.68s]  tesla, 19%
+[0.00s - 3.36s]  percent to 64 and if we look at the nasdaq it's up 10
+[0.00s - 2.76s]  the s&p is up 8%
+[0.00s - 3.04s]  is up seven percent it affects the volatility
+[0.00s - 4.46s]  index is down 27% so
+[0.14s - 2.14s]  just
+[0.00s - 1.68s]  what a crazy time we live in
+[1.90s - 3.16s]  if you follow this channel closely,
+[0.00s - 5.60s]  know that one of the thesis that we had
+[0.00s - 3.34s]  for for a few days now was that this was going to be
+[0.34s - 3.66s]  this whole thing most likely was an anti
+[0.00s - 2.66s]  china policy, an anti-china approach
+[0.00s - 2.52s]  i don't like trump who say this is trump folding
+[0.00s - 3.60s]  trump sort of giving in to pressure and said, you know what?
+[0.00s - 3.40s]  i'm not going to go ahead with the craziness
+[0.00s - 5.58s]  too much pressure but i think what's probably more realistic in my
+[0.00s - 5.42s]  opinion is that there is enough speech
+[0.00s - 3.44s]  shown from his perspective that he sees there's weakness and
+[0.00s - 3.48s]  china, and he has enough from other folks to say
+[0.00s - 3.04s]  okay, let's make a deal to move manufacturing out of china
+[0.00s - 3.44s]  to our locations more so that we can weaken
+[0.00s - 3.20s]  a country that we're all very heavily dependent on
+[0.00s - 3.48s]  since covid has highlighted that, and then we're going down the path
+[0.00s - 2.00s]  trying to make ourselves stronger
+stop_recording
+stop_stream
+stream.close
+p.terminate
+os.remove

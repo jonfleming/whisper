@@ -26,7 +26,7 @@ CHUNK_DURATION_MS = 20  # VAD works with 10ms, 20ms, or 30ms chunks
 SAMPLE_RATE = 16000  # WebRTC VAD requires 8kHz, 16kHz, 32kHz, or 48kHz
 CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
 LOCK_FILE = "whisper.lock"
-MIN_SPEECH_DURATION = 1.5  # Minimum speech duration to process (in seconds)
+MIN_SPEECH_DURATION = 2.0  # Minimum speech duration to process (in seconds)
 OUTPUT_FILE = "transcription_output.txt"
 
 DEBUG = True
@@ -76,21 +76,10 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
     global awake, sleep_countdown
     """Process audio from buffer and transcribe in real-time without saving to file."""
     frames, speech_detected, speech_start_time, total_duration, silence_duration = initialize_processing_vars()
-
-    # Collect a small buffer before starting processing to avoid dropping initial words
-    initial_buffer_size = 10  # Number of chunks to collect before processing
-    initial_frames = []
     
-    # Collect initial buffer
-    for _ in range(initial_buffer_size):
-        chunk = audio_buffer.get_chunk()
-        if chunk is not None:
-            initial_frames.append(chunk)
-        else:
-            time.sleep(0.01)
-    
-    # Add initial frames to main frames buffer
-    frames.extend(initial_frames)
+    # Track speech frames count to ensure we have actual content
+    speech_frames_count = 0
+    total_frames_count = 0
     
     # Continue with normal processing
     while total_duration < max_duration:
@@ -100,10 +89,12 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
             continue
 
         total_duration += CHUNK_DURATION_MS / 1000
-
-        if is_speech(chunk, vad):
+        total_frames_count += 1
+        
+        if is_speech(chunk, vad):            
             speech_detected, speech_start_time, silence_duration = handle_speech_detected(
                 speech_detected, speech_start_time, silence_duration, chunk, frames)
+            speech_frames_count += 1
             if awake:
                 sleep_countdown = AWAKE_TIME # Reset awake time when speech is detected
         else:
@@ -114,11 +105,18 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
                 if sleep_countdown <= 0:
                     clear_prompt()
                     awake = False
+    
+    # Calculate speech ratio to filter out ambient noise
+    speech_ratio = speech_frames_count / total_frames_count if total_frames_count > 0 else 0
+    
+    # Only process if we have frames AND detected enough speech frames
+    # Increased threshold from 5 to 10 frames minimum with speech
+    if not frames or speech_frames_count < 10:  
+        return False
 
-        # write_to_file(f"\rSilence_duration: {silence_duration:.2f} {'Awake' if awake  else 'Asleep'} {sleep_countdown}")
-        
-    if not frames:
-        write_to_file(".")
+    # Only process if we've detected actual speech (not just noise)
+    # Ensure at least 20% of frames contain speech
+    if not speech_detected or speech_ratio < 0.2:
         return False
 
     transcribe_audio(frames, model)
@@ -130,9 +128,20 @@ def transcribe_audio(frames, model):
     audio_data = b"".join(frames)
     audio_np = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
 
-    segments, _ = model.transcribe(audio_np, beam_size=3, vad_filter=False)
+    # Add VAD filtering and set minimum confidence threshold
+    segments, _ = model.transcribe(audio_np, beam_size=5, vad_filter=True, temperature=0.0)
+    
     for segment in segments:
+        # Skip segments with low confidence
+        if hasattr(segment, 'avg_logprob') and segment.avg_logprob < -0.7:
+            continue
+            
         final_text = segment.text.lower().replace(".", "")
+        
+        # Skip very short segments that are likely noise
+        if len(final_text.strip()) < 2:
+            continue
+            
         line = f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}\n"
         write_to_file(line)
 
@@ -235,7 +244,7 @@ def main():
 
     if os.path.exists(LOCK_FILE) and not args.force:
         print("Another instance is already running.\n")
-        sys.exit(1)  # Exit if another instance is found
+        sys.exit(0)  # Exit if another instance is found
 
     # Create the lock file
     open(LOCK_FILE, "w").close()
@@ -243,8 +252,8 @@ def main():
     # Initialize FasterWhisper model
     model = WhisperModel("large-v3", device="cuda", compute_type="float16")
 
-    # Initialize WebRTC VAD
-    vad = webrtcvad.Vad(1)
+    # Initialize WebRTC VAD with higher aggressiveness (0-3, 3 being most aggressive)
+    vad = webrtcvad.Vad(3)
 
     # Set up PyAudio with buffered recording
     audio_buffer = AudioBuffer()
