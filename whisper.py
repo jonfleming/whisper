@@ -250,6 +250,7 @@ def main():
         if os.path.exists(LOCK_FILE):
             debug("os.remove")
             os.remove(LOCK_FILE)
+        sys.exit(0)  # Ensure a clean exit
 
 if __name__ == "__main__":
     main()
