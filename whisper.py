@@ -20,13 +20,15 @@ import keyboard
 import argparse
 
 # Audio settings
-SAMPLE_RATE = 16000  # WebRTC VAD requires 8kHz, 16kHz, 32kHz, or 48kHz
-CHUNK_DURATION_MS = 20  # VAD works with 10ms, 20ms, or 30ms chunks
-CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
-MIN_SPEECH_DURATION = 1.5  # Minimum speech duration to process (in seconds)
-BUFFER_MAX_SIZE = 100  # Maximum number of chunks to keep in buffer
-LOCK_FILE = "whisper.lock"
 AWAKE_TIME = 250
+BUFFER_MAX_SIZE = 100  # Maximum number of chunks to keep in buffer
+CHUNK_DURATION_MS = 20  # VAD works with 10ms, 20ms, or 30ms chunks
+SAMPLE_RATE = 16000  # WebRTC VAD requires 8kHz, 16kHz, 32kHz, or 48kHz
+CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
+LOCK_FILE = "whisper.lock"
+MIN_SPEECH_DURATION = 1.5  # Minimum speech duration to process (in seconds)
+OUTPUT_FILE = "transcription_output.txt"
+
 DEBUG = True
 
 awake = False
@@ -39,9 +41,14 @@ class AudioBuffer:
         self.stop_recording = Event()
         self.is_recording = False
 
+# filepath: c:\Projects\whisper\whisper.py
     def callback(self, in_data, frame_count, time_info, status):
         if not self.stop_recording.is_set():
             try:
+                # Add overlapping frames
+                if not self.buffer.empty():
+                    last_chunk = self.buffer.queue[-1]
+                    in_data = last_chunk[-CHUNK_SIZE:] + in_data
                 self.buffer.put(in_data)
             except Exception:  # Queue.Full exception
                 # If buffer is full, remove oldest chunk
@@ -70,8 +77,23 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
     """Process audio from buffer and transcribe in real-time without saving to file."""
     frames, speech_detected, speech_start_time, total_duration, silence_duration = initialize_processing_vars()
 
+    # Collect a small buffer before starting processing to avoid dropping initial words
+    initial_buffer_size = 10  # Number of chunks to collect before processing
+    initial_frames = []
+    
+    # Collect initial buffer
+    for _ in range(initial_buffer_size):
+        chunk = audio_buffer.get_chunk()
+        if chunk is not None:
+            initial_frames.append(chunk)
+        else:
+            time.sleep(0.01)
+    
+    # Add initial frames to main frames buffer
+    frames.extend(initial_frames)
+    
+    # Continue with normal processing
     while total_duration < max_duration:
-
         chunk = audio_buffer.get_chunk()
         if chunk is None:
             time.sleep(0.01)  # Small sleep to prevent busy waiting
@@ -93,10 +115,10 @@ def process_audio_buffer(audio_buffer, vad, model, max_duration=3):
                     clear_prompt()
                     awake = False
 
-        print(f"\rSilence_duration: {silence_duration:.2f} {'Awake' if awake  else 'Asleep'} {sleep_countdown}", end="", flush=True)
-
+        # write_to_file(f"\rSilence_duration: {silence_duration:.2f} {'Awake' if awake  else 'Asleep'} {sleep_countdown}")
+        
     if not frames:
-        print(".", end="")
+        write_to_file(".")
         return False
 
     transcribe_audio(frames, model)
@@ -111,7 +133,8 @@ def transcribe_audio(frames, model):
     segments, _ = model.transcribe(audio_np, beam_size=3, vad_filter=False)
     for segment in segments:
         final_text = segment.text.lower().replace(".", "")
-        print(f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}")
+        line = f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}\n"
+        write_to_file(line)
 
         if not awake:
             if "teresa" in final_text.strip().lower():
@@ -194,9 +217,15 @@ def save_recorded_audio(filename, frames, sample_rate):
     wf.writeframes(b''.join(frames))
     wf.close()
 
+def write_to_file(msg):
+    """Write a message to the output file."""
+    print(msg, end="", flush=True)
+    with open(OUTPUT_FILE, "a") as f:
+        f.write(msg)
+
 def debug(msg):
     if DEBUG:
-        print(msg)
+        write_to_file(msg + "\n")  # Write debug messages to the file
         # keyboard.read_event(msg)
 
 def main():
@@ -205,7 +234,7 @@ def main():
     args = parser.parse_args()
 
     if os.path.exists(LOCK_FILE) and not args.force:
-        print("Another instance is already running.")
+        print("Another instance is already running.\n")
         sys.exit(1)  # Exit if another instance is found
 
     # Create the lock file
@@ -215,7 +244,7 @@ def main():
     model = WhisperModel("large-v3", device="cuda", compute_type="float16")
 
     # Initialize WebRTC VAD
-    vad = webrtcvad.Vad(3)
+    vad = webrtcvad.Vad(1)
 
     # Set up PyAudio with buffered recording
     audio_buffer = AudioBuffer()
