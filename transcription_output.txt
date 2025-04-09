@@ -1,79 +1,181 @@
-[2.06s - 4.06s]  teresa
-[0.00s - 1.52s]  nothing less to a space
-[0.00s - 3.00s]  so it's not like scratching your head trying to figure out where it is, it's actually a 10mm screw
-[0.14s - 3.42s]  it just isn't there now in this video you'll actually
-[0.21s - 2.49s]  three of these spaces to a little hut board
-[2.69s - 3.55s]  but again, because the design has changed,
-[0.00s - 3.80s]  what we want to do is to actually attach a form
-[0.00s - 3.20s]  reason it's not quite actually following through with what they do here which is to attach that
-[0.00s - 3.70s]  spacer to the actual raspberry pi itself this turns out to be just a temporary
-[0.00s - 3.68s]  it's the way the original design was suctioned up, but because that design has not changed
-[0.00s - 3.54s]  well, there's no plugs instead, as i say, we just attach all four of those actual spaces
-[0.00s - 2.88s]  another board is n630-a3 board, two different pipe patterns
-[0.21s - 3.19s]  and the players don't even need a touch-up game in this
-stop_recording
-stop_stream
-stream.close
-p.terminate
-os.remove
-[0.34s - 2.34s]  teresa
-[0.00s - 2.92s]  19%, 19% donald trump
-[0.00s - 3.42s]  just put out a post about an hour
-[1.10s - 3.40s]  that talks about a brand new
-[0.00s - 3.42s]  approach to tariffs that has changed dramatically here
-[1.26s - 3.42s]  we've talked a lot about the different possibilities
-[0.00s - 3.38s]  on this channel but we have confirmation that
-[0.11s - 3.39s]  is hiking tariffs on china to 125%
-[0.00s - 2.64s]  and authorizes a 90-day tariff pause on everyone else
-[0.00s - 3.54s]  this post real quick, based on the lack of respect that china
-[0.00s - 2.16s]  has shown to the world's market
-[2.46s - 3.46s]  i wish i could do a trump
-[0.00s - 3.76s]  pressure, but i can't i am hereby raising that tariffs
-[0.00s - 3.56s]  charged to china by the united states of america to 125% effective
-[0.00s - 5.54s]  immediately at some point hopefully in the near future china
-[0.00s - 3.54s]  will realize that the days of ripping off the usa and other countries is not
-[0.00s - 3.66s]  longer sustainable or acceptable conversely, and based on
-[0.00s - 3.30s]  the fact that more than 25, i've said, sorry, 75
-[0.00s - 5.48s]  have called representatives of the united states including
-[0.00s - 3.54s]  the department of commerce, treasury, and the ust
-[0.00s - 3.52s]  are to negotiate a solution to the subjects being discussed relative
-[0.00s - 3.52s]  to trade barriers, tariffs, currency money pollution
-[0.18s - 2.12s]  and non-monetary tariffs
-[0.00s - 3.44s]  these countries have not, and my strong suggestion would help
-[0.37s - 3.33s]  in any way, shape, or form, i guess, in the united states
-[0.00s - 3.18s]  have authorized a 90-day pause and a substantial
-[0.00s - 3.68s]  substantially lower reciprocal tariff during this period of time
-[0.00s - 3.58s]  10% also effective immediately
-[0.00s - 2.18s]  thank you for your attention to this matter
-[0.00s - 5.44s]  course that we showed before the entire stock market
-[0.00s - 3.52s]  it not just test life i mean this thing keeps going up all this
-[0.00s - 1.76s]  it's at 19% now
-[2.54s - 3.68s]  tesla, 19%
-[0.00s - 3.36s]  percent to 64 and if we look at the nasdaq it's up 10
-[0.00s - 2.76s]  the s&p is up 8%
-[0.00s - 3.04s]  is up seven percent it affects the volatility
-[0.00s - 4.46s]  index is down 27% so
-[0.14s - 2.14s]  just
-[0.00s - 1.68s]  what a crazy time we live in
-[1.90s - 3.16s]  if you follow this channel closely,
-[0.00s - 5.60s]  know that one of the thesis that we had
-[0.00s - 3.34s]  for for a few days now was that this was going to be
-[0.34s - 3.66s]  this whole thing most likely was an anti
-[0.00s - 2.66s]  china policy, an anti-china approach
-[0.00s - 2.52s]  i don't like trump who say this is trump folding
-[0.00s - 3.60s]  trump sort of giving in to pressure and said, you know what?
-[0.00s - 3.40s]  i'm not going to go ahead with the craziness
-[0.00s - 5.58s]  too much pressure but i think what's probably more realistic in my
-[0.00s - 5.42s]  opinion is that there is enough speech
-[0.00s - 3.44s]  shown from his perspective that he sees there's weakness and
-[0.00s - 3.48s]  china, and he has enough from other folks to say
-[0.00s - 3.04s]  okay, let's make a deal to move manufacturing out of china
-[0.00s - 3.44s]  to our locations more so that we can weaken
-[0.00s - 3.20s]  a country that we're all very heavily dependent on
-[0.00s - 3.48s]  since covid has highlighted that, and then we're going down the path
-[0.00s - 2.00s]  trying to make ourselves stronger
-stop_recording
-stop_stream
-stream.close
-p.terminate
-os.remove
+[0.00s - 0.84s]  teresa
+[0.00s - 1.20s]  part of the automotive industry in the future
+[0.00s - 3.38s]  if trump were not to do this, the most likely scenario is that companies like byd
+[0.14s - 1.84s]  would get around
+[0.00s - 3.20s]  depends really on understanding the development of
+[0.00s - 3.44s]  and being able to use the complicated set of
+[0.00s - 5.24s]  one of the most just the largest automotive manufacturers in the world
+[0.00s - 3.60s]  and it would kill almost all of the competition because china was using their entire economy
+[0.00s - 1.86s]  say, this is the one area,
+[2.00s - 3.18s]  one of the areas we're just going to win in
+[0.56s - 3.86s]  because like byd doesn't just have the benefit of their own
+[0.11s - 3.67s]  they've got great workers, they've got great strategists, they're making incredible products
+[0.02s - 3.34s]  they deserve to, you know, be praised for all those things
+[0.00s - 5.30s]  also have the support of the ccp in a strategic area and when things go wrong
+[0.00s - 2.18s]  they have that at their back that can help them
+[2.54s - 3.90s]  and that's the part that just needs to change
+[0.00s - 3.96s]  so that's where we've been, that's why this issue is such a huge problem
+[0.00s - 3.60s]  and i'm just impressed that we are actually taking measures right now
+[0.14s - 3.52s]  look like they might actually be able to, because this is not
+[0.00s - 1.36s]  just a us and china problem,
+[1.68s - 3.68s]  every other country in the world also feels
+[0.00s - 3.84s]  reveals the impacts of the way that china has been engaging in these unfair practices
+[0.00s - 3.68s]  and like germany is another great example, the german economy
+[0.00s - 3.00s]  is highly tied to automotive, and now bmw and volkswagen
+[0.00s - 3.52s]  and all these other porsche companies that
+[0.00s - 2.56s]  our crown jewels of the german economy
+[2.56s - 3.68s]  are being eviscerated because
+[0.00s - 2.96s]  they can become dependent on the chinese market that had become one of their most profitable
+[2.96s - 3.24s]  markets
+[0.00s - 2.40s]  they were silly and they engaged
+[2.40s - 3.72s]  in this exchange of the idea
+[0.00s - 5.76s]  expertise and experience and now they are having to face competition
+[0.00s - 3.74s]  from chinese companies that is very very difficult for them
+[0.00s - 5.60s]  to be able to withstand and that has the potential to tip the entire time
+[0.00s - 3.00s]  germany into a very, very, very bad place very quickly
+[0.00s - 3.56s]  you know, us and china problem this is a global problem and i think that fact
+[0.00s - 3.76s]  also is one of the things that makes it much more likely that we are going to get to a
+[0.00s - 3.02s]  that we are going to contain china economically
+[0.00s - 3.44s]  three and that china is going to be contained that we're not going to like
+[0.00s - 3.82s]  this is the ideal scenario if you were to paint
+[0.00s - 3.58s]  a picture of world war ii where instead of appeasing nazi germany
+[0.00s - 3.50s]  when they invaded austria that the whole world got together
+[0.00s - 14.88s]  you know what this is it no more we're just gonna be done right here you can have austria
+[0.00s - 3.08s]  further that is the type of situation that we're in today with china
+[0.00s - 3.60s]  world looks different because we're in a post-nuclear age and so the weapons of this warfare
+[0.00s - 3.68s]  are primarily economic, but that's the label i insist on
+[0.00s - 1.50s]  thank you so much for joining us last minute
+[0.00s - 2.00s]  i can't wait to hear what you have to say, so i'm just going to give you the mic
+[2.00s - 4.00s]  wait, what's with your head?
+[0.00s - 1.26s]  we've been talking about this the last couple of days,
+[1.32s - 3.88s]  but the tariff rates were so competitive that they couldn't
+[0.00s - 3.70s]  they couldn't stay it was just almost a freezing, for the most part
+[0.00s - 3.04s]  so that i mean part of this is playing out in terms of our game
+[0.00s - 3.38s]  together kind of play everything towards china i got everybody saying the same thing do i kind of
+[0.00s - 3.52s]  would want to look at it is, one is, we have 125% tariff
+[0.00s - 3.60s]  on china and we import a lot of china goods so that problem is still on
+[0.02s - 3.78s]  so, supply issues from multiple countries still, you know,
+[0.00s - 3.04s]  still have to be worked out but maybe short-term maybe contained i want to talk about this 10
+[0.00s - 3.76s]  when i talk about clients actually is actually putting this administration plant-based case of
+[0.00s - 1.74s]  what would this look like a couple months from now,
+[1.80s - 2.58s]  however long you think this takes,
+[2.86s - 3.66s]  and a lot of the conversations
+[0.00s - 3.00s]  okay, how would your business run with a 10% tariff on the country?
+[0.00s - 3.66s]  think that's where we're at i don't think that they're going away i don't think that that's how
+[0.00s - 3.90s]  i think the announcement of the external revenue service is more permanent
+[0.00s - 3.26s]  than, i don't know, this president and his administration are
+[0.00s - 3.52s]  unpredictable but for me that's still that is those are fair
+[0.00s - 3.56s]  you high tariff rates on every country coming into your business and you know what? with
+[0.00s - 3.44s]  i think there's a path to adjust to that, but it does immediately blow up
+[0.00s - 3.36s]  i would say a lot of business cases on a lot of like medium and small size companies and products
+[0.00s - 2.84s]  because, i mean, a 10% increase is significant
+[2.98s - 3.72s]  i mean, just getting it, it's all
+[0.00s - 3.84s]  at once it's not like it's something that feathers in throughout the year so but if he does
+[0.00s - 3.72s]  some room for adjustment i think the 10% is what people should be planning on
+[0.00s - 4.00s]  but that's just a tariff that's just a duty there's all the other non-tariff barriers
+[0.00s - 3.20s]  and then there's all these opportunities maybe for now for us to do this in other countries
+[0.00s - 3.76s]  kind of walk away from this is we still have 125% of china i think that's going to lead
+[0.00s - 3.24s]  a lot of supply issues i think we're going to have supply issues due to business case problems
+[0.00s - 4.00s]  basically do a massive business cases turned upside down between countries
+[0.00s - 3.00s]  and us manufacturers making product
+[0.30s - 3.60s]  and that is still the case, but now to a smaller extent, but you're trying to go into one
+[0.00s - 3.72s]  25 it's just a question of it's getting so absurdly high that you're basically not trading
+[0.00s - 3.68s]  at that point and so my optimistic side says the higher that number
+[0.00s - 3.18s]  goes maybe the closer we actually are to a deal with that but i think it's going to take some
+[3.18s - 3.60s]  period of time
+[0.00s - 2.58s]  because the issues with china are so complex
+[0.00s - 3.60s]  i know there's a lot of champagne course copy right now, but i can put myself
+[0.00s - 2.60s]  i think there's, if i were to play this out over the next 30 days, like if this doesn't wrap up
+[0.00s - 2.00s]  and we don't get down to something closer to 10-
+[1.07s - 3.07s]  teresa
+[1.39s - 3.17s]  it's going to be a big impact for companies
+[0.00s - 3.44s]  so the next round of things you're going to see are companies that can't produce products
+[0.00s - 3.20s]  and lay people off, then you're going to see supply shocks for the companies that do decide to stay in business
+[0.00s - 3.44s]  and that's what you're gonna start seeing in the news and then you may start seeing concerns over
+[0.00s - 3.14s]  session and unemployment going up so there's going to be a lot of competing narratives
+[0.00s - 3.48s]  to me, this isolating china is where i thought it would go and i'm glad it would go
+[0.02s - 2.18s]  but i am still very concerned about the supply situation
+[2.76s - 3.48s]  jeff, so just real quick
+[0.00s - 3.40s]  can you comment on, like, if both things happen, if we are getting close?
+[0.00s - 3.50s]  aluminum alloy swivel computer stand is a powerful
+[0.00s - 3.40s]  and practical computer accessories that provides users
+[0.00s - 3.04s]  like if there's basically certainty in the market regarding the fact that there are going to be
+[0.00s - 2.90s]  that the deals are going to be mostly fair
+[2.90s - 3.74s]  and then there's the
+[0.18s - 3.60s]  also perfectly valid recognition that yeah it's going to be really
+[0.00s - 3.42s]  choppy short-term economically for a whole bunch of nations and a whole bunch of
+[0.00s - 3.46s]  businesses, like how do you think the market responds to certainty around
+[0.00s - 2.08s]  where the tariff war is going and where it's going to end
+[2.08s - 3.50s]  and what that means right now
+[0.00s - 2.78s]  right now for a lot of people that are in acute pain
+[1.14s - 3.16s]  you mean, like, it took the 10%?
+[0.00s - 3.32s]  terror to stay on for the companies that don't have super resilient
+[0.00s - 3.28s]  higher gross margin businesses that are making hardware they're making products you know that's
+[0.00s - 3.44s]  that's going to cause some problems my advice to these companies is get in the room, don't
+[0.00s - 2.56s]  all the parts on the table, apollo 13 style, let's go
+[2.86s - 3.50s]  you're not going to get 10%
+[0.00s - 3.64s]  maybe in one swoop but you could get a couple you could be like there's something
+[0.00s - 3.36s]  about, and i teach this in terms of design for value, there's something about a target
+[0.00s - 2.56s]  and a date, and it's, and you get people rallying around,
+[2.66s - 3.30s]  like, you know, it's a poverty
+[0.00s - 1.26s]  we have to get these, we have to get them home
+[1.68s - 2.82s]  like, we just don't have time to figure this out
+[2.96s - 3.56s]  same thing with the situation
+[0.00s - 3.12s]  the best defense for these companies is to go look at their internet economics
+[0.00s - 1.60s]  he's like, well, if they could do this, they would have done it yesterday
+[1.78s - 3.46s]  well, there's a different bit of urgency right now because the whole world order
+[0.00s - 3.28s]  has basically changed and you have to put the administration on hand over time
+[0.00s - 3.20s]  is some sort of residual terror i don't think the external revenue service is going away
+[0.00s - 2.96s]  to say i'm taking in billions and billions of dollars so people continue to say that
+[0.00s - 3.44s]  by the way, it's still not party time when we have a basic
+[0.00s - 3.36s]  a supply like it's almost it's almost an import ban on china 125 percent
+[0.00s - 3.12s]  who's gonna you know import and keep selling and like you guys see these ridiculous things of like
+[0.00s - 3.32s]  trump liberation day and putting it, i mean, i know it's cute and it looks fine, but to me as a consumer,
+[0.00s - 2.40s]  of a joke i don't want to see that i want you to just go solve the problem with your
+[2.40s - 3.30s]  report i want you to take your costs down
+[0.00s - 3.16s]  let you just blame blame the administration which by the way i'm not happy with how this is all
+[3.16s - 3.72s]  managed but
+[0.00s - 2.34s]  you know, so i think for consumers, i think it's going to be a mixed bag
+[2.52s - 3.74s]  it's certainly better than where we were 12 hours ago
+[0.00s - 2.76s]  i definitely think you'll bring on that china piece already later
+[2.76s - 3.56s]  real quick, let me talk to your head
+[0.14s - 3.66s]  yeah hi how are you hi guys yeah when you make a bad mistake
+[0.69s - 2.93s]  to try and cover it up as best you can and do a little bit of tap dancing
+[0.00s - 1.20s]  some tuck dancing right now
+[2.02s - 3.44s]  i mean, this was a very good
+[0.00s - 2.90s]  execute a strategy i don't know if the strategy was right or wrong
+[0.08s - 3.46s]  whatever it was, it was separately executed as to blow back against
+[0.00s - 2.48s]  and the administration, and they're doing the best they can
+[2.60s - 3.32s]  they took a rumor from yesterday
+[0.00s - 5.66s]  morning and turned it into a strategy for today you know 90-day wait
+[0.00s - 2.28s]  and all 75 people have come to us and blah, blah, blah
+[2.80s - 3.36s]  so, you know
+[0.82s - 3.62s]  every administration as a mistake this was a facing
+[0.00s - 3.40s]  i'm very supportive of president trump and his
+[0.00s - 3.44s]  objectives um now the question is how do they risk the situation and jeff is right
+[0.78s - 3.36s]  it's one thing to put a 90-day stop on these other companies
+[0.00s - 3.42s]  where does the bulk of supply come from for manufacturers and retailers?
+[0.00s - 3.44s]  are like china their shops on the city right now those boats have got
+[0.00s - 2.46s]  a lot of product in there, what are we going to do?
+[0.00s - 3.04s]  5% tariff on those, come on, it's not feasible
+[0.00s - 2.54s]  and i really see the problems, i really see the pain on the amazon web pages
+[0.00s - 3.36s]  uh we have multiple problems the first is trying to turn this
+[0.00s - 3.40s]  straight into a strategy the second is dealing with this problem with china right now
+[0.24s - 3.34s]  china's got a very strong hand in this conversation, very strong hand
+[0.00s - 2.78s]  and, you know, had we started the other way around,
+[2.84s - 3.44s]  had we started negotiating
+[0.00s - 3.60s]  with 75 countries and not put the screws on china to the
+[0.00s - 3.20s]  extent that we have, we may be in a different position or not so the question is how to deal with it
+[0.00s - 3.52s]  and jeff is right those people who really depend upon these components from china for their retail
+[0.00s - 3.54s]  sales, for their manufacturing, for their supply chain
+[0.00s - 3.42s]  in general, they're going to have to scramble, and they're going to be in a
+[0.00s - 3.18s]  world is good this is going to reset china, america
+[0.00s - 3.40s]  relationships for the next century, half a century, much like nixon did
+[0.00s - 2.64s]  in 1972 this is going to be the same sort of moment
+[0.00s - 3.26s]  and it really sets china up as the, you know,
+[0.00s - 3.44s]  russia of the 60s and 70s
+[0.00s - 3.30s]  so we've got a lot of work to do
+[0.75s - 2.99s]  i'm going to add kutrop and gisa down
+[0.00s - 3.42s]  and luck shaking hands, they both have the propensity
+[0.00s - 3.20s]  need to be able to pull it off i don't know that they will so i'm not i'm not
+[1.68s - 2.68s]  tchau

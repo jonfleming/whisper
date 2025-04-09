@@ -30,6 +30,7 @@ MIN_SPEECH_DURATION = 2.0  # Minimum speech duration to process (in seconds)
 OUTPUT_FILE = "transcription_output.txt"
 
 DEBUG = True
+SEND_KEYS = False
 
 awake = False
 sleep_countdown = 0
@@ -154,11 +155,11 @@ def transcribe_audio(frames, model):
             clear_prompt()
 
             if len(final_text) < 8 and "enter" in final_text.strip().lower():
-                pyautogui.press("enter")
+                pyautogui.press("enter") if SEND_KEYS else None
                 output = output + "\n"
                 show_prompt()
             elif len(final_text) < 8 and "period" in final_text.strip().lower():
-                pyautogui.write(". ")
+                pyautogui.write(". ") if SEND_KEYS else None
                 output = output + ". "
                 show_prompt()
             elif len(final_text) < 8 and "delete" in final_text.strip().lower():
@@ -167,25 +168,25 @@ def transcribe_audio(frames, model):
                 output = output[:-len(last_word)].rstrip()
                 debug("[" + last_word + "]")
                 for _ in range(len(last_word) + 1):  # +1 to remove the trailing space
-                    pyautogui.press("backspace")
+                    pyautogui.press("backspace") if SEND_KEYS else None
                 debug(">" + output + "<")
                 show_prompt()
 
             else:
-                pyautogui.write(final_text)
+                pyautogui.write(final_text) if SEND_KEYS else None
                 output = output + final_text
                 show_prompt()
 
 def show_prompt():
     global prompt
     prompt= ">"
-    pyautogui.write(prompt)
+    pyautogui.write(prompt) if SEND_KEYS else None
 
 def clear_prompt():
     global prompt
     if prompt == ">":
         prompt = ""
-        pyautogui.press("backspace")
+        pyautogui.press("backspace") if SEND_KEYS else None
 
 def get_last_word(text):
     words = text.split()
