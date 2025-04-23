@@ -28,9 +28,10 @@ CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
 LOCK_FILE = "whisper.lock"
 MIN_SPEECH_DURATION = 2.0  # Minimum speech duration to process (in seconds)
 OUTPUT_FILE = "transcription_output.txt"
+WAKE_WORD = "teresa"
 
 DEBUG = True
-SEND_KEYS = False
+SEND_KEYS = True
 
 awake = False
 sleep_countdown = 0
@@ -147,7 +148,7 @@ def transcribe_audio(frames, model):
         write_to_file(line)
 
         if not awake:
-            if "teresa" in final_text.strip().lower():
+            if WAKE_WORD in final_text.strip().lower():
                 awake = True
                 sleep_countdown = AWAKE_TIME
                 show_prompt()
@@ -267,7 +268,7 @@ def main():
                    stream_callback=audio_buffer.callback)
 
     stream.start_stream()
-    print("Starting real-time transcription with VAD. Speak into your microphone...")
+    print(f"Starting real-time transcription with VAD. Say '{WAKE_WORD}' to start sending output to the current window.")
 
     try:
         while True:

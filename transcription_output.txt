@@ -179,3 +179,85 @@
 [0.00s - 3.42s]  and luck shaking hands, they both have the propensity
 [0.00s - 3.20s]  need to be able to pull it off i don't know that they will so i'm not i'm not
 [1.68s - 2.68s]  tchau
+[0.00s - 1.00s]  this is a test
+stop_recording
+stop_stream
+stream.close
+p.terminate
+os.remove
+stop_recording
+stop_stream
+stream.close
+p.terminate
+os.remove
+[0.00s - 0.36s]  teresa
+[0.00s - 1.00s]  this is a test
+[0.00s - 1.00s]  testingtesting
+stop_recording
+stop_stream
+stream.close
+p.terminate
+os.remove
+[1.01s - 8.01s]  testing
+[0.00s - 1.00s]  this is a test
+[0.00s - 2.00s]  teresa
+[0.18s - 1.94s]  i'm trying to figure it out
+[0.00s - 4.52s]  out when to press
+[0.00s - 1.00s]  the enter key
+[0.00s - 0.84s]  teresa
+[0.00s - 1.00s]  the enter key
+[0.00s - 0.84s]  teresa
+[0.05s - 2.05s]  teresa
+[0.00s - 7.00s]  so the idea is
+[0.37s - 1.77s]  i want to buff
+[0.00s - 3.30s]  for all of the text
+[0.00s - 1.84s]  until i stop speaking
+[1.42s - 3.42s]  1 tbs of butter
+[3.42s - 5.42s]  1 tbs of flour
+[5.42s - 7.42s]  1 tbs of butter
+[7.42s - 9.42s]  1 tbs of flour
+[9.42s - 11.42s]  1 tbs of flour
+[11.42s - 13.42s]  1 tbs of flour
+[13.42s - 15.42s]  1 tbs of flour
+[15.42s - 17.42s]  1 tbs of flour
+[17.42s - 19.42s]  1 tbs of flour
+[19.42s - 21.42s]  1 tbs of flour
+[21.42s - 23.42s]  1 tbs of flour
+[23.42s - 25.42s]  1 tbs of flour
+[25.42s - 27.42s]  1 tbs of flour
+[27.42s - 29.42s]  1 tbs of flour
+[0.00s - 1.60s]  so we need the sound
+[0.00s - 0.84s]  teresa
+[0.00s - 2.00s]  so, i need to figure
+[0.00s - 5.32s]  out a way to give
+[0.00s - 3.10s]  whisper m
+[0.00s - 0.84s]  a call back
+[0.46s - 3.46s]  function
+[0.00s - 0.70s]  this is a test
+[0.00s - 2.58s]  teresa
+[0.00s - 0.96s]  is there a way?
+[0.00s - 1.00s]  that
+[0.21s - 7.21s]  testing
+[0.00s - 0.84s]  teresa
+[0.00s - 0.96s]  a typical python
+[0.00s - 2.00s]  library
+[0.00s - 1.00s]  amém
+[0.00s - 0.56s]  amen
+[0.00s - 1.04s]  and we are at six
+[0.34s - 2.34s]  1 tbs of butter
+[2.34s - 4.34s]  1 tbs of flour
+[4.34s - 6.34s]  1 tbs of butter
+[6.34s - 8.34s]  1 tbs of flour
+[8.34s - 10.34s]  1 tbs of flour
+[10.34s - 12.34s]  1 tbs of flour
+[12.34s - 14.34s]  1 tbs of flour
+[14.34s - 16.34s]  1 tbs of flour
+[16.34s - 18.34s]  1 tbs of flour
+[18.34s - 20.34s]  1 tbs of flour
+[20.34s - 22.34s]  1 tbs of flour
+[22.34s - 24.34s]  1 tbs of flour
+[24.34s - 26.34s]  1 tbs of flour
+[26.34s - 28.34s]  1 tbs of flour
+[1.23s - 1.65s]  thank you
+[0.43s - 2.43s]  thank you for watching!
+[0.00s - 1.66s]  so we can turn the same keys off
