@@ -28,12 +28,13 @@ CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
 LOCK_FILE = "whisper.lock"
 MIN_SPEECH_DURATION = 2.0  # Minimum speech duration to process (in seconds)
 OUTPUT_FILE = "transcription_output.txt"
-WAKE_WORD = "Teresa"
+WAKE_WORD = "Teresa"  # Default wake word
 
 DEBUG = True
 SEND_KEYS = True
 
 awake = False
+wake_word_enabled = True  # New variable to control wake word functionality
 sleep_countdown = 0
 prompt = ">"
 output = ""
@@ -147,7 +148,7 @@ def transcribe_audio(frames, model):
         line = f"[{segment.start:.2f}s - {segment.end:.2f}s] {final_text}\n"
         write_to_file(line)
 
-        if not awake:
+        if not awake and wake_word_enabled:
             if WAKE_WORD.lower() in final_text.strip().lower():
                 awake = True
                 sleep_countdown = AWAKE_TIME
@@ -242,11 +243,22 @@ def debug(msg):
 def main():
     parser = argparse.ArgumentParser(description="Real-time audio transcription with VAD and FasterWhisper.")
     parser.add_argument("-f", "--force", action="store_true", help="Force bypass the lock file test.")
+    parser.add_argument("-w", "--wake-word", type=str, help="Set custom wake word (use 'none' to disable)")
     args = parser.parse_args()
 
     if os.path.exists(LOCK_FILE) and not args.force:
         print("Another instance is already running.\n")
-        sys.exit(0)  # Exit if another instance is found
+        sys.exit(0)
+
+    # Handle wake word settings
+    global WAKE_WORD, wake_word_enabled, awake
+    if args.wake_word:
+        if args.wake_word.lower() == 'none':
+            wake_word_enabled = False
+            awake = True  # Start in awake state when wake word is disabled
+        else:
+            WAKE_WORD = args.wake_word
+            wake_word_enabled = True
 
     # Create the lock file
     open(LOCK_FILE, "w").close()
@@ -268,7 +280,9 @@ def main():
                    stream_callback=audio_buffer.callback)
 
     stream.start_stream()
-    print(f"Starting real-time transcription with VAD. Say '{WAKE_WORD}' to start sending output to the current window.")
+    print(f"Starting real-time transcription with VAD. " + 
+          (f"Say '{WAKE_WORD}' to start sending output to the current window." if wake_word_enabled 
+           else "Wake word is disabled, immediately sending output to current window."))
 
     try:
         while True:

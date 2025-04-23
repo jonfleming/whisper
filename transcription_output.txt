@@ -261,3 +261,13 @@ os.remove
 [1.23s - 1.65s]  thank you
 [0.43s - 2.43s]  thank you for watching!
 [0.00s - 1.66s]  so we can turn the same keys off
+stop_recording
+stop_stream
+stream.close
+p.terminate
+os.remove
+stop_recording
+stop_stream
+stream.close
+p.terminate
+os.remove
