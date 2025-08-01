@@ -11,7 +11,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "python": "/home/jon/miniconda3/envs/whisper/bin/python"
+            //"python": "/home/jon/miniconda3/envs/whisper/bin/python"
         }
     ]
 }
