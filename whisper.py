@@ -18,11 +18,12 @@ from threading import Thread, Event
 import struct
 import keyboard
 import argparse
+import math
 
 # Audio settings
 AWAKE_TIME = 250
 BUFFER_MAX_SIZE = 100  # Maximum number of chunks to keep in buffer
-CHUNK_DURATION_MS = 20  # VAD works with 10ms, 20ms, or 30ms chunks
+CHUNK_DURATION_MS = 10  # VAD works with 10ms, 20ms, or 30ms chunks
 SAMPLE_RATE = 16000  # WebRTC VAD requires 8kHz, 16kHz, 32kHz, or 48kHz
 CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
 LOCK_FILE = "whisper.lock"
@@ -53,6 +54,7 @@ class AudioBuffer:
                     last_chunk = self.buffer.queue[-1]
                     in_data = last_chunk[-CHUNK_SIZE:] + in_data
                 self.buffer.put(in_data)
+                self.display_audio_meter(in_data)  # Add this line to visualize audio
             except Exception:  # Queue.Full exception
                 # If buffer is full, remove oldest chunk
                 try:
@@ -67,6 +69,15 @@ class AudioBuffer:
             return self.buffer.get_nowait()
         except Exception:  # Queue.Empty exception
             return None
+
+    def display_audio_meter(self, in_data):
+        """Display an audio meter based on the amplitude of the audio chunk."""
+        audio_np = np.frombuffer(in_data, dtype=np.int16)
+        rms = math.sqrt(np.mean(audio_np**2))  # Calculate root mean square (RMS) amplitude
+        meter = "#" * int(rms / 2)  # Scale the amplitude to create a visual meter
+        padding = " " * (50 - len(meter))  # Pad to fixed width
+        meter = f"[{meter}{padding}] {rms:.2f}"
+        print(f"Audio Meter: {meter}", end="\r")  # Print the meter in the terminal
 
 def is_speech(frame, vad, sample_rate=SAMPLE_RATE):
     """Check if the audio frame contains speech using WebRTC VAD."""
@@ -267,7 +278,7 @@ def main():
     model = WhisperModel("large-v3", device="cuda", compute_type="float16")
 
     # Initialize WebRTC VAD with higher aggressiveness (0-3, 3 being most aggressive)
-    vad = webrtcvad.Vad(3)
+    vad = webrtcvad.Vad(0)
 
     # Set up PyAudio with buffered recording
     audio_buffer = AudioBuffer()

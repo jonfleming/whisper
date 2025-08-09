@@ -1,3 +1,7 @@
 *.wav
 temp*
 transcription_output.txt
+/Converted
+/Transcribed
+/Processed
+/Input

@@ -1,4 +1,4 @@
-# Whisper ASR
+## Whisper ASR
 
 usage: whisper.py [-h] [-f] [-w WAKE_WORD]
 
@@ -9,3 +9,6 @@ options:
   -f, --force           Force bypass the lock file test.
   -w WAKE_WORD,         Set custom wake word (use 'none' to disable)
   --wake-word WAKE_WORD Default wake word is 'Teresa'  
+
+  ## Transccribe
+  
