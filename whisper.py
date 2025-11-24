@@ -23,11 +23,11 @@ import math
 # Audio settings
 AWAKE_TIME = 250
 BUFFER_MAX_SIZE = 100  # Maximum number of chunks to keep in buffer
-CHUNK_DURATION_MS = 10  # VAD works with 10ms, 20ms, or 30ms chunks
+CHUNK_DURATION_MS = 20  # VAD works with 10ms, 20ms, or 30ms chunks
 SAMPLE_RATE = 16000  # WebRTC VAD requires 8kHz, 16kHz, 32kHz, or 48kHz
 CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)  # Frames per chunk
 LOCK_FILE = "whisper.lock"
-MIN_SPEECH_DURATION = 2.0  # Minimum speech duration to process (in seconds)
+MIN_SPEECH_DURATION = 0.5  # Minimum speech duration to process (in seconds)
 OUTPUT_FILE = "transcription_output.txt"
 WAKE_WORD = "Teresa"  # Default wake word
 

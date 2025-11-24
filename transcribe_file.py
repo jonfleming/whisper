@@ -91,7 +91,7 @@ def convert_audio_files():
     # Convert all .wav files in the input directory to the desired format    
     for filename in tqdm(os.listdir(input_dir)):
         if filename.lower().endswith(".wav"):
-            input_path = os.path.join(input_dir, filename)
+            input_path = os.path.join( os.path.abspath(input_dir), filename)
             output_path = os.path.join(output_dir, filename.replace(".WAV", ".wav"))
 
             # Force output to PCM 16-bit, mono, 16kHz
@@ -106,13 +106,16 @@ def convert_audio_files():
             ]
 
             try:
-                subprocess.run(cmd, check=True)
+                # New recorder doesn't need conversion; simulate success
+                # subprocess.run(cmd, check=True)
+                pass
             except subprocess.CalledProcessError:
                 print(f"Error converting {filename}")
 
             move_to_processed(input_path)
 
 def process_files():
+    global input_dir, output_dir
     convert_audio_files()
 
     for filename in tqdm(os.listdir(output_dir)):
@@ -133,6 +136,7 @@ def move_to_processed(src_path):
     processed_dir = os.path.abspath(processed_dir)
     os.makedirs(processed_dir, exist_ok=True)
     dst_path = os.path.join(processed_dir, os.path.basename(src_path))
+    print(f"Processed: Moving {src_path} to {dst_path} without conversion")
     shutil.move(src_path, dst_path)
     print(f"Moved {src_path} to {dst_path}")
 
@@ -141,6 +145,7 @@ def move_to_transcribed(src_path):
     transcribed_dir = os.path.abspath(transcribed_dir)
     os.makedirs(transcribed_dir, exist_ok=True)
     dst_path = os.path.join(transcribed_dir, os.path.basename(src_path))
+    print(f"Transcribed: Moving {src_path} to {dst_path} without conversion")
     shutil.move(src_path, dst_path)
     print(f"Moved {src_path} to {dst_path}")
 
