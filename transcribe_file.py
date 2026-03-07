@@ -13,19 +13,18 @@ ollama_url = "http://localhost:11434/api/chat"
 ollama_model = "qwen3"
 chunk_size = 32 * 1024  # 32KB
 
-# Generate a timestamped transcript file name
-timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-transcript_file = f"converted/transcript_{timestamp}.txt"
-
 # Run on GPU with FP16 
 whisper_model = WhisperModel(model_size, device="cuda", compute_type="float16")
 
 def transcribe_file(filename):
-    global transcript_file, whisper_model
+    global whisper_model
     print(f"\nTranscribing file: {filename}")
 
-    segments, info = whisper_model.transcribe(filename, beam_size=5)
-    print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
+    base_name = os.path.splitext(os.path.basename(filename))[0]
+    transcript_file = os.path.join(output_dir, f"transcript_{base_name}.txt")
+
+    segments, info = whisper_model.transcribe(filename, beam_size=5, language="en")
+    # print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
 
     output_lines = []
     repeated = ""
@@ -36,12 +35,15 @@ def transcribe_file(filename):
             output_lines.append(segment.text)
             output_lines.append("\n")
 
-    # Write to a single output file
-    with open(transcript_file, "a", encoding="utf-8") as f:
+    # Write to the transcript file
+    with open(transcript_file, "w", encoding="utf-8") as f:
         f.writelines(output_lines)
 
+    # Summarize the transcript
+    summarize(transcript_file)
+
 def summarize(filename):
-    global transcript_file, chunk_size
+    global chunk_size
     print(f"\nSummarizing transcript file: {filename}")
 
     with open(filename, "r", encoding="utf-8") as f:
@@ -73,7 +75,7 @@ def summarize(filename):
         })
         summary = response.json()["message"]["content"]
         print(summary)
-        with open(transcript_file, "a", encoding="utf-8") as f:
+        with open(filename, "a", encoding="utf-8") as f:
             f.writelines(["\n--- Summary of chunk {} ---\n".format(i+1), summary, "\n"])
         
 
@@ -112,7 +114,7 @@ def convert_audio_files():
             except subprocess.CalledProcessError:
                 print(f"Error converting {filename}")
 
-            move_to_processed(input_path)
+            move_to_converted(input_path)
 
 def process_files():
     global input_dir, output_dir
@@ -129,14 +131,12 @@ def process_files():
 
             move_to_transcribed(file_path)
 
-    summarize(transcript_file)
-
-def move_to_processed(src_path):
-    processed_dir = os.path.join(os.path.dirname(src_path), '..', 'Processed')
-    processed_dir = os.path.abspath(processed_dir)
-    os.makedirs(processed_dir, exist_ok=True)
-    dst_path = os.path.join(processed_dir, os.path.basename(src_path))
-    print(f"Processed: Moving {src_path} to {dst_path} without conversion")
+def move_to_converted(src_path):
+    converted_dir = os.path.join(os.path.dirname(src_path), '..', 'Converted')
+    converted_dir = os.path.abspath(converted_dir)
+    os.makedirs(converted_dir, exist_ok=True)
+    dst_path = os.path.join(converted_dir, os.path.basename(src_path))
+    print(f"Converted: Moving {src_path} to {dst_path} without conversion")
     shutil.move(src_path, dst_path)
     print(f"Moved {src_path} to {dst_path}")
 
