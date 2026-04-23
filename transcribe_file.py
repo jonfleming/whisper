@@ -5,23 +5,45 @@ from datetime import datetime
 from tqdm import tqdm
 import requests
 from faster_whisper import WhisperModel
+import argparse
+from pathlib import Path
 
 input_dir = "Input"
 output_dir = "Converted"
 model_size = "large-v3"
-ollama_url = "http://localhost:11434/api/chat"
-ollama_model = "qwen3"
+ollama_url = "http://100.111.132.40:11434/api/chat"
+ollama_model = "gemma4:latest"
+# NAME             ID              SIZE      MODIFIED
+# gemma4:31b       6316f0629137    19 GB     4 hours ago
+# llama3.2:3b      a80c4f17acd5    2.0 GB    4 hours ago
+# qwen3.6:35b      07d35212591f    23 GB     4 hours ago
+# gemma4:latest    c6eb396dbd59    9.6 GB    21 hours ago
+
 chunk_size = 32 * 1024  # 32KB
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Transcribe audio files using Whisper.')
+parser.add_argument('--separate', action='store_true', help='Create separate transcripts for each file instead of a single combined transcript')
+args = parser.parse_args()
+separate_transcripts = args.separate
+
+# Generate a timestamped transcript file name if not separate
+if not separate_transcripts:
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    transcript_file = os.path.join(output_dir, f"transcript_{timestamp}.txt")
 
 # Run on GPU with FP16 
 whisper_model = WhisperModel(model_size, device="cuda", compute_type="float16")
 
 def transcribe_file(filename):
-    global whisper_model
+    global whisper_model, transcript_file, separate_transcripts
     print(f"\nTranscribing file: {filename}")
 
-    base_name = os.path.splitext(os.path.basename(filename))[0]
-    transcript_file = os.path.join(output_dir, f"transcript_{base_name}.txt")
+    if separate_transcripts:
+        base_name = os.path.splitext(os.path.basename(filename))[0]
+        current_transcript_file = os.path.join(output_dir, f"transcript_{base_name}.txt")
+    else:
+        current_transcript_file = transcript_file
 
     segments, info = whisper_model.transcribe(filename, beam_size=5, language="en")
     # print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
@@ -36,11 +58,13 @@ def transcribe_file(filename):
             output_lines.append("\n")
 
     # Write to the transcript file
-    with open(transcript_file, "w", encoding="utf-8") as f:
+    mode = "w" if separate_transcripts else "a"
+    with open(current_transcript_file, mode, encoding="utf-8") as f:
         f.writelines(output_lines)
 
-    # Summarize the transcript
-    summarize(transcript_file)
+    if separate_transcripts:
+        # Summarize the transcript
+        summarize(current_transcript_file)
 
 def summarize(filename):
     global chunk_size
@@ -117,12 +141,12 @@ def convert_audio_files():
             move_to_converted(input_path)
 
 def process_files():
-    global input_dir, output_dir
+    global input_dir, output_dir, separate_transcripts, transcript_file
     convert_audio_files()
 
-    for filename in tqdm(os.listdir(output_dir)):
-        if filename.lower().endswith(".wav"):
-            file_path = os.path.join(output_dir, filename)
+    for filename in tqdm(list(Path(output_dir).glob("*.wav"))):
+        if filename.suffix.lower() == ".wav":
+            file_path = str(filename)
             try:
                 transcribe_file(file_path)
             except Exception as e:
@@ -130,6 +154,9 @@ def process_files():
                 continue
 
             move_to_transcribed(file_path)
+
+    if not separate_transcripts:
+        summarize(transcript_file)
 
 def move_to_converted(src_path):
     converted_dir = os.path.join(os.path.dirname(src_path), '..', 'Converted')
@@ -150,3 +177,4 @@ def move_to_transcribed(src_path):
     print(f"Moved {src_path} to {dst_path}")
 
 process_files()
+# summarize("Converted/transcript_20260422-161436.txt")
