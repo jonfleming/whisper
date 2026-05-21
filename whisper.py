@@ -39,6 +39,8 @@ wake_word_enabled = True  # New variable to control wake word functionality
 sleep_countdown = 0
 prompt = ">"
 output = ""
+shutting_down = Event()
+
 class AudioBuffer:
     def __init__(self):
         self.buffer = Queue(maxsize=BUFFER_MAX_SIZE)
@@ -72,12 +74,18 @@ class AudioBuffer:
 
     def display_audio_meter(self, in_data):
         """Display an audio meter based on the amplitude of the audio chunk."""
+        if shutting_down.is_set():
+            return
         audio_np = np.frombuffer(in_data, dtype=np.int16)
         rms = math.sqrt(np.mean(audio_np**2))  # Calculate root mean square (RMS) amplitude
         meter = "#" * int(rms / 2)  # Scale the amplitude to create a visual meter
         padding = " " * (50 - len(meter))  # Pad to fixed width
         meter = f"[{meter}{padding}] {rms:.2f}"
-        print(f"Audio Meter: {meter}", end="\r")  # Print the meter in the terminal
+        try:
+            print(f"Audio Meter: {meter}", end="\r")  # Print the meter in the terminal
+        except Exception:
+            # Stdout may already be tearing down during interpreter shutdown.
+            pass
 
 def is_speech(frame, vad, sample_rate=SAMPLE_RATE):
     """Check if the audio frame contains speech using WebRTC VAD."""
@@ -303,19 +311,40 @@ def main():
     except Exception as e:
         print(f"Error: {e}")
     finally:
-        # Ensure resources are cleaned up properly
-        debug("stop_recording")
-        audio_buffer.stop_recording.set()
-        debug("stop_stream")
-        stream.stop_stream()
-        debug("stream.close")
-        stream.close()
-        debug("p.terminate")
-        p.terminate()
-        if os.path.exists(LOCK_FILE):
-            debug("os.remove")
-            os.remove(LOCK_FILE)
-        sys.exit(0)  # Ensure a clean exit
+        # Ensure resources are cleaned up properly and avoid teardown races.
+        shutting_down.set()
+
+        try:
+            debug("stop_recording")
+            audio_buffer.stop_recording.set()
+        except Exception:
+            pass
+
+        try:
+            if stream.is_active():
+                debug("stop_stream")
+                stream.stop_stream()
+        except Exception:
+            pass
+
+        try:
+            debug("stream.close")
+            stream.close()
+        except Exception:
+            pass
+
+        try:
+            debug("p.terminate")
+            p.terminate()
+        except Exception:
+            pass
+
+        try:
+            if os.path.exists(LOCK_FILE):
+                debug("os.remove")
+                os.remove(LOCK_FILE)
+        except Exception:
+            pass
 
 if __name__ == "__main__":
     main()
