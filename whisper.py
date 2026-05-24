@@ -9,6 +9,7 @@ import pyaudio
 import pyautogui
 import wave
 import time
+import gc
 import webrtcvad
 from faster_whisper import WhisperModel
 import numpy as np
@@ -40,6 +41,26 @@ sleep_countdown = 0
 prompt = ">"
 output = ""
 shutting_down = Event()
+
+
+def cleanup_whisper_model(model):
+    if model is None:
+        return
+    try:
+        model_ref = model
+        del model_ref
+        gc.collect()
+    except Exception:
+        pass
+
+
+def safe_exit(code=0):
+    try:
+        sys.stdout.flush()
+        sys.stderr.flush()
+    except Exception:
+        pass
+    os._exit(code)
 
 class AudioBuffer:
     def __init__(self):
@@ -303,6 +324,7 @@ def main():
           (f"Say '{WAKE_WORD}' to start sending output to the current window." if wake_word_enabled 
            else "Wake word is disabled, immediately sending output to current window."))
 
+    exit_code = 0
     try:
         while True:
             process_audio_buffer(audio_buffer, vad, model, max_duration=3)
@@ -310,6 +332,7 @@ def main():
         print("\nStopped by user.")
     except Exception as e:
         print(f"Error: {e}")
+        exit_code = 1
     finally:
         # Ensure resources are cleaned up properly and avoid teardown races.
         shutting_down.set()
@@ -345,6 +368,9 @@ def main():
                 os.remove(LOCK_FILE)
         except Exception:
             pass
+
+        cleanup_whisper_model(model)
+        safe_exit(exit_code)
 
 if __name__ == "__main__":
     main()

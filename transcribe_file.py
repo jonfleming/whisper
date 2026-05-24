@@ -1,6 +1,8 @@
 import os
 import shutil
 import subprocess
+import sys
+import gc
 from datetime import datetime
 from tqdm import tqdm
 import requests
@@ -34,6 +36,28 @@ if not separate_transcripts:
 
 # Run on GPU with FP16 
 whisper_model = WhisperModel(model_size, device="cuda", compute_type="float16")
+
+
+def cleanup_whisper_model():
+    global whisper_model
+    if whisper_model is None:
+        return
+    try:
+        model_ref = whisper_model
+        whisper_model = None
+        del model_ref
+        gc.collect()
+    except Exception:
+        pass
+
+
+def safe_exit(code=0):
+    try:
+        sys.stdout.flush()
+        sys.stderr.flush()
+    except Exception:
+        pass
+    os._exit(code)
 
 def transcribe_file(filename):
     global whisper_model, transcript_file, separate_transcripts
@@ -176,5 +200,20 @@ def move_to_transcribed(src_path):
     shutil.move(src_path, dst_path)
     print(f"Moved {src_path} to {dst_path}")
 
-process_files()
+
+def main():
+    exit_code = 0
+    try:
+        process_files()
+    except Exception as e:
+        print(f"Fatal error: {e}")
+        exit_code = 1
+    finally:
+        # Avoid native teardown crashes in Windows by disposing model before process exit.
+        cleanup_whisper_model()
+        safe_exit(exit_code)
+
+
+if __name__ == "__main__":
+    main()
 # summarize("Converted/transcript_20260422-161436.txt")
