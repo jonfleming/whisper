@@ -13,7 +13,7 @@ from pathlib import Path
 input_dir = "Input"
 output_dir = "Converted"
 model_size = "large-v3"
-ollama_url = "http://100.111.132.40:11434/api/chat"
+ollama_url = "https://ollama.fleming.ai/api/chat"
 ollama_model = "gemma4:latest"
 # NAME             ID              SIZE      MODIFIED
 # gemma4:31b       6316f0629137    19 GB     4 hours ago
