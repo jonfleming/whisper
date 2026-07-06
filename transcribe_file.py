@@ -38,6 +38,38 @@ if not separate_transcripts:
 whisper_model = WhisperModel(model_size, device="cuda", compute_type="float16")
 
 
+def _unload_cuda_dlls():
+    """Unload CUDA DLLs that ctranslate2 loaded via ctypes.CDLL().
+    Prevents the Win32 crash during Python shutdown on Windows.
+    DLLs must be freed in reverse dependency order."""
+    try:
+        from ctypes import windll, c_wchar_p, c_ulong
+        GetModuleHandleW = windll.kernel32.GetModuleHandleW
+        GetModuleHandleW.argtypes = [c_wchar_p]
+        GetModuleHandleW.restype = c_ulong
+        FreeLibrary = windll.kernel32.FreeLibrary
+        FreeLibrary.argtypes = [c_ulong]
+        FreeLibrary.restype = c_ulong
+
+        # Reverse dependency order: cusolver depends on cublas/cusparse, etc.
+        dlls = [
+            "cusolver64_64.dll",
+            "cublasLt64_64.dll",
+            "cublas64_64.dll",
+            "cusparse64_64.dll",
+            "cudart64_64.dll",
+        ]
+        for dll in dlls:
+            try:
+                handle = GetModuleHandleW(dll)
+                if handle:
+                    FreeLibrary(handle)
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+
 def cleanup_whisper_model():
     global whisper_model
     if whisper_model is None:
@@ -49,6 +81,7 @@ def cleanup_whisper_model():
         gc.collect()
     except Exception:
         pass
+    _unload_cuda_dlls()
 
 
 def safe_exit(code=0):
