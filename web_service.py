@@ -6,6 +6,9 @@ from typing import Annotated
 
 import requests
 from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from faster_whisper import WhisperModel
 
 
@@ -22,6 +25,16 @@ REQUEST_TIMEOUT_SECONDS = int(os.getenv("OLLAMA_TIMEOUT_SECONDS", "180"))
 
 app = FastAPI(title="Whisper Transcription Service", version="1.0.0")
 whisper_model: WhisperModel | None = None
+
+
+# Add CORS middleware to allow requests from any origin
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def get_model() -> WhisperModel:
@@ -168,3 +181,16 @@ def shutdown_cleanup() -> None:
     global whisper_model
     whisper_model = None
     gc.collect()
+
+
+@app.get("/")
+def serve_index() -> FileResponse:
+    """Serve the main UI page."""
+    static_dir = Path(__file__).parent / "static"
+    return FileResponse(static_dir / "index.html", media_type="text/html")
+
+
+# Mount static files (CSS, JS, images, etc.)
+static_dir = Path(__file__).parent / "static"
+if static_dir.exists():
+    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
