@@ -28,7 +28,7 @@ pip install -r requirements.txt
 Start the service:
 
 ```bash
-uvicorn web_service:app --host 0.0.0.0 --port 8000
+uvicorn web_service:app --host 0.0.0.0 --port 7000
 ```
 
 ### Endpoints
