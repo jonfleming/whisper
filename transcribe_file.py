@@ -13,7 +13,8 @@ from pathlib import Path
 input_dir = "Input"
 output_dir = "Converted"
 model_size = "large-v3"
-ollama_url = "https://ollama.fleming.ai/api/chat"
+# ollama_url = "https://ollama.fleming.ai/api/chat"
+ollama_url = "https://lmstudio.fleming.ai/v1/chat/completions"
 ollama_model = "gemma4:latest"
 # NAME             ID              SIZE      MODIFIED
 # gemma4:31b       6316f0629137    19 GB     4 hours ago
@@ -154,7 +155,7 @@ def summarize(filename):
             ],
             "stream": False
         })
-        summary = response.json()["message"]["content"]
+        summary = response.json()["choices"][0]["message"]["content"] #response.json()["message"]["content"]
         print(summary)
         with open(filename, "a", encoding="utf-8") as f:
             f.writelines(["\n--- Summary of chunk {} ---\n".format(i+1), summary, "\n"])
@@ -248,5 +249,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-# summarize("Converted/transcript_20260422-161436.txt")
+    #main()
+    #summarize("Converted/transcript_20260726-154111.txt")
