@@ -4,18 +4,26 @@ import tempfile
 from pathlib import Path
 from typing import Annotated
 
+import ctranslate2
 import requests
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from faster_whisper import WhisperModel
-
+    
+def pick_device():
+    if ctranslate2.get_cuda_device_count() > 0:
+        return "cuda"
+    return "cpu"
 
 MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "large-v3")
-WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cpu")
-WHISPER_COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
+WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", pick_device())
+WHISPER_COMPUTE_TYPE = (
+    "float16" if WHISPER_DEVICE == "cuda" else "int8"
+)
 WHISPER_LANGUAGE = os.getenv("WHISPER_LANGUAGE", "en")
+print(f"Using Whisper model size: {MODEL_SIZE}, device: {WHISPER_DEVICE}, compute type: {WHISPER_COMPUTE_TYPE}, language: {WHISPER_LANGUAGE}")  
 
 OLLAMA_URL = os.getenv("OLLAMA_URL", "https://lmstudio.fleming.ai/v1/chat/completions")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen3-coder-next")
