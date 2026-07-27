@@ -13,8 +13,8 @@ from faster_whisper import WhisperModel
 
 
 MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "large-v3")
-WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cuda")
-WHISPER_COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "float16")
+WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cpu")
+WHISPER_COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
 WHISPER_LANGUAGE = os.getenv("WHISPER_LANGUAGE", "en")
 
 OLLAMA_URL = os.getenv("OLLAMA_URL", "https://lmstudio.fleming.ai/v1/chat/completions")
