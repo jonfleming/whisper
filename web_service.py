@@ -17,8 +17,8 @@ WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cuda")
 WHISPER_COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "float16")
 WHISPER_LANGUAGE = os.getenv("WHISPER_LANGUAGE", "en")
 
-OLLAMA_URL = os.getenv("OLLAMA_URL", "https://ollama.fleming.ai/api/chat")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma4:latest")
+OLLAMA_URL = os.getenv("OLLAMA_URL", "https://lmstudio.fleming.ai/v1/chat/completions")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen3-coder-next")
 CHUNK_SIZE_BYTES = int(os.getenv("SUMMARY_CHUNK_SIZE", str(32 * 1024)))
 REQUEST_TIMEOUT_SECONDS = int(os.getenv("OLLAMA_TIMEOUT_SECONDS", "180"))
 
@@ -86,7 +86,7 @@ def summarize_chunk(chunk: str) -> str:
     response.raise_for_status()
 
     try:
-        return response.json()["message"]["content"].strip()
+        return response.json()["choices"][0]["message"]["content"].strip()
     except (KeyError, TypeError, ValueError) as exc:
         raise RuntimeError("Unexpected response format from summarization service") from exc
 
