@@ -13,16 +13,20 @@ from pathlib import Path
 input_dir = "Input"
 output_dir = "Converted"
 model_size = "large-v3"
-# ollama_url = "https://ollama.fleming.ai/api/chat"
-ollama_url = "https://lmstudio.fleming.ai/v1/chat/completions"
-ollama_model = "gemma4:latest"
-# NAME             ID              SIZE      MODIFIED
-# gemma4:31b       6316f0629137    19 GB     4 hours ago
-# llama3.2:3b      a80c4f17acd5    2.0 GB    4 hours ago
-# qwen3.6:35b      07d35212591f    23 GB     4 hours ago
-# gemma4:latest    c6eb396dbd59    9.6 GB    21 hours ago
+ollama_url = "https://ollama.fleming.ai/api/chat"
+#ollama_url = "https://ollama.fleming.ai/v1/chat/completions"
+ollama_model = "qwen3.8:27b"
+# NAME             ID              SIZE    
+# gemma4:31b       6316f0629137    19 GB   
+# llama3.2:3b      a80c4f17acd5    2.0 GB  
+# qwen3.6:35b      07d35212591f    23 GB   
+# gemma4:latest    c6eb396dbd59    9.6 GB  
 
 chunk_size = 32 * 1024  # 32KB
+
+
+class OllamaUnavailableError(Exception):
+    """Raised when Ollama is unavailable and summarization cannot continue."""
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Transcribe audio files using Whisper.')
@@ -148,14 +152,41 @@ def summarize(filename):
 
     for i, chunk in enumerate(chunks):
         print(f"\n--- Summarizing chunk {i+1}/{len(chunks)} ---\n")
-        response = requests.post(ollama_url, json={
-            "model": ollama_model,
-            "messages": [
-                {"role": "user", "content": f"Summarize the following transcript chunk focusing on the key points and takeaways:\n\n{chunk}"}
-            ],
-            "stream": False
-        })
-        summary = response.json()["choices"][0]["message"]["content"] #response.json()["message"]["content"]
+        try:
+            response = requests.post(ollama_url, json={
+                "model": ollama_model,
+                "messages": [
+                    {"role": "user", "content": f"Summarize the following transcript chunk focusing on the key points and takeaways:\n\n{chunk}"}
+                ],
+                "stream": False,
+                "think": True
+            })
+        except requests.RequestException as exc:
+            raise OllamaUnavailableError(
+                f"Could not reach Ollama service at {ollama_url}. Start the service and retry."
+            ) from exc
+
+        if response.status_code == 502:
+            raise OllamaUnavailableError(
+                f"Ollama service is unavailable (HTTP 502) at {ollama_url}. Start the service and retry."
+            )
+
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as exc:
+            raise OllamaUnavailableError(
+                f"Ollama request failed with HTTP {response.status_code}: {response.text[:200]}"
+            ) from exc
+
+        # v1/chat/completion response
+        # summary = response.json()["choices"][0]["message"]["content"] #response.json()["message"]["content"]
+        # api/chat response
+        try:
+            summary = response.json()["message"]["content"]
+        except (ValueError, KeyError, TypeError) as exc:
+            raise OllamaUnavailableError(
+                "Ollama returned an unexpected response format; verify the service is running and the API endpoint is correct."
+            ) from exc
         print(summary)
         with open(filename, "a", encoding="utf-8") as f:
             f.writelines(["\n--- Summary of chunk {} ---\n".format(i+1), summary, "\n"])
@@ -191,7 +222,7 @@ def convert_audio_files():
 
             try:
                 # New recorder doesn't need conversion; simulate success
-                # subprocess.run(cmd, check=True)
+                #subprocess.run(cmd, check=True)
                 pass
             except subprocess.CalledProcessError:
                 print(f"Error converting {filename}")
@@ -207,6 +238,9 @@ def process_files():
             file_path = str(filename)
             try:
                 transcribe_file(file_path)
+            except OllamaUnavailableError as e:
+                print(f"\n{e}")
+                raise
             except Exception as e:
                 print(f"Error transcribing {filename}: {e}")
                 continue
@@ -249,5 +283,5 @@ def main():
 
 
 if __name__ == "__main__":
-    #main()
-    #summarize("Converted/transcript_20260726-154111.txt")
+    main()
+    # summarize("Converted/transcript_20260930-120505.txt")
